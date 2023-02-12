@@ -1,18 +1,19 @@
 data class Post(
     val id: Int,
-    val authorId: Int,
-    val authorName: String,
-    val content: String,
-    val published: Long,
-    val likes: Int,
-    val replyPostId: Int, //Идентификатор записи, в ответ на которую была оставлена текущая.
-    val canPin: Boolean, //Информация о том, может ли текущий пользователь закрепить запись (true — может, false — не может).
-    val canDelete: Boolean, //Информация о том, может ли текущий пользователь удалить запись (true — может, false — не может).
-    val isFavorite: Boolean //true, если объект добавлен в закладки у текущего пользователя
+    val authorId: Int = 86464,
+    val authorName: String = "Petya",
+    val content: String = "Picture and photo",
+    val published: Long = 94949,
+    val likes: Int = 0,
+    val replyPostId: Int = 1,
+    val canPin: Boolean = true,
+    val canDelete: Boolean = true,
+    val isFavorite: Boolean = true,
+    val like: Like = Like(0)
 )
 
-class Like(
-    val count: Int = 5165,
+data class Like(
+    val count: Int,
     val userLikes: Boolean = true,
     val canLike: Boolean = true,
     val canPublish: Boolean = true
@@ -21,35 +22,42 @@ class Like(
 object WallService {
 
     private var posts = emptyArray<Post>()
+    private var lastId = 0
     fun add(post: Post): Post {
-        posts += post
+        posts += post.copy(id = ++lastId, like = post.like.copy())
         return posts.last()
     }
 
-    fun likeById(id: Int) {
+    fun update(newPost: Post): Boolean {
         for ((index, post) in posts.withIndex()) {
-            if (post.id == id) {
-                posts[index] = post.copy(likes = post.likes + 1)
+            if (post.id == newPost.id) {
+                posts[index] = newPost.copy(like = newPost.like.copy())
+                return true
             }
         }
+        return false
+    }
+
+    fun clear() {
+        posts = emptyArray()
+        lastId = 0
+
+        val result = lastId > 0
+    }
+
+    fun printPosts() {
+        for (post in posts) {
+            println(post)
+        }
+        println()
     }
 }
 
-object Likes {
-    fun add(like: Like): Like {
-        return like
-    }
-}
 
 fun main() {
-    val post = Post(1, 1, "author", "content", 0, 0, 5, true, true, false)
-    val liked = post.copy(likes = post.likes + 1)
-    val (id, authorId, _, content) = post
-    println(liked.likes)
-    println("$id, $authorId, $content")
-
-    val like = Like()
-    println(like.count)
-
-
+    val post = Post(0)
+    val post2 = Post(2)
+    WallService.add(post)
+    WallService.add(post2)
+    WallService.printPosts()
 }
