@@ -9,8 +9,17 @@ data class Post(
     val canPin: Boolean = true,
     val canDelete: Boolean = true,
     val isFavorite: Boolean = true,
-    val like: Like = Like(0)
+    val original: Post?,
+    val like: Like = Like(
+        0,
+        true,
+        true,
+        true
+    ),
+    var attachmentArray: Array<Attachment> = emptyArray()
 )
+
+
 
 data class Like(
     val count: Int,
@@ -55,11 +64,10 @@ object WallService {
 
 
 fun main() {
-    val post = Post(1)
-    val post2 = Post(2)
+    val post = Post(1,  original = null)
+    val repost = Post(2, original = post)
     WallService.add(post)
     WallService.update(post)
-    WallService.add(post2)
     WallService.printPosts()
 
 }

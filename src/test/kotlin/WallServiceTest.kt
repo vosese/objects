@@ -11,7 +11,7 @@ class WallServiceTest {
 
     @Test
     fun add() {
-        val post = Post(0)
+        val post = Post(0, original = null)
         assertNotEquals(post.id, 1)
     }
 }
