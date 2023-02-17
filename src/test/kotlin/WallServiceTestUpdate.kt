@@ -1,6 +1,8 @@
 import org.junit.Test
 
 import org.junit.Before
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class WallServiceTestUpdate {
 
@@ -11,18 +13,18 @@ class WallServiceTestUpdate {
 
     @Test
     fun update1() {
-        val post = Post(0)
-        WallService.update(post)
-        assert(true)
+        val post = WallService.add(Post(1))
+        val result = WallService.update(post)
+        assertEquals(true, result)
     }
 
- /*  @Test
-    fun update2() {
+    @Test
+       fun update2() {
+        val post = Post(3)
+        val result = WallService.update(post)
+        assertEquals(false, result)
+       }
 
-       assert(false)
-    }
-
-  */
 
 
 }

@@ -55,9 +55,11 @@ object WallService {
 
 
 fun main() {
-    val post = Post(0)
+    val post = Post(1)
     val post2 = Post(2)
     WallService.add(post)
+    WallService.update(post)
     WallService.add(post2)
     WallService.printPosts()
+
 }
