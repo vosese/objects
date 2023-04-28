@@ -20,7 +20,6 @@ data class Post(
 )
 
 
-
 data class Like(
     val count: Int,
     val userLikes: Boolean = true,
@@ -28,10 +27,20 @@ data class Like(
     val canPublish: Boolean = true
 )
 
+data class Comment(
+    val id: Int,
+    val fromId: Int,
+    val date: String,
+    val text: String,
+)
+
+class PostNotFoundException(message: String) : RuntimeException(message)
+
 object WallService {
 
     private var posts = emptyArray<Post>()
     private var lastId = 0
+    var comments = emptyArray<Comment>()
     fun add(post: Post): Post {
         posts += post.copy(id = ++lastId, like = post.like.copy())
         return posts.last()
@@ -60,14 +69,28 @@ object WallService {
         }
         println()
     }
+
+
+    fun createComment(postId: Int, comment: Comment): Comment {
+        for ((index, post) in posts.withIndex()) {
+            if (postId == post.id) {
+                comments += comment
+                return comments.last()
+            }
+        }
+        return throw PostNotFoundException("В ID $postId нет такого поста")
+    }
+
 }
 
 
 fun main() {
-    val post = Post(1,  original = null)
+    val post = Post(1, original = null)
     val repost = Post(2, original = post)
+    val comment = Comment(1, 5555, "1 апреля", "Ля ля ля")
     WallService.add(post)
     WallService.update(post)
     WallService.printPosts()
-
+    WallService.createComment(1, comment)
+    println(WallService.comments.last())
 }
